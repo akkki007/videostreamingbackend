@@ -1,0 +1,401 @@
+{
+	"info": {
+		"_postman_id": "video-streaming-api-collection",
+		"name": "Video Streaming API",
+		"description": "Complete API collection for Video Streaming Web Application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"authToken\", jsonData.token);",
+									"    pm.collectionVariables.set(\"userId\", jsonData.userId);",
+									"    pm.collectionVariables.set(\"username\", jsonData.username);",
+									"    console.log(\"Token saved: \" + jsonData.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"testuser@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register a new user account. Returns JWT token on success."
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"authToken\", jsonData.token);",
+									"    pm.collectionVariables.set(\"userId\", jsonData.userId);",
+									"    pm.collectionVariables.set(\"username\", jsonData.username);",
+									"    console.log(\"Token saved: \" + jsonData.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login with username and password. Returns JWT token on success."
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication endpoints for user registration and login"
+		},
+		{
+			"name": "Videos",
+			"item": [
+				{
+					"name": "List All Videos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/videos?page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"videos"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Page number (default: 0)"
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"description": "Items per page (default: 10)"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search query for title/description (optional)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Get paginated list of all videos. Supports search query parameter."
+					},
+					"response": []
+				},
+				{
+					"name": "Search Videos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/videos?page=0&size=10&search=test",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"videos"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": "test",
+									"description": "Search query for title/description"
+								}
+							]
+						},
+						"description": "Search videos by title or description"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Video by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/videos/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"videos",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "Video ID"
+								}
+							]
+						},
+						"description": "Get video details by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Video",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": [],
+									"description": "Video file (max 500MB)"
+								},
+								{
+									"key": "title",
+									"value": "My Video Title",
+									"type": "text",
+									"description": "Video title (required)"
+								},
+								{
+									"key": "description",
+									"value": "Video description",
+									"type": "text",
+									"description": "Video description (optional)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/videos/upload",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"videos",
+								"upload"
+							]
+						},
+						"description": "Upload a new video. Requires authentication. Max file size: 500MB"
+					},
+					"response": []
+				},
+				{
+					"name": "Stream Video",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Range",
+								"value": "bytes=0-",
+								"description": "Optional: For partial content/seek support (e.g., bytes=0-1024)",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/videos/stream/:filename",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"videos",
+								"stream",
+								":filename"
+							],
+							"variable": [
+								{
+									"key": "filename",
+									"value": "",
+									"description": "Video filename (UUID)"
+								}
+							]
+						},
+						"description": "Stream video file. Supports HTTP range requests for seeking."
+					},
+					"response": []
+				},
+				{
+					"name": "Stream Video with Range",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Range",
+								"value": "bytes=0-1024",
+								"description": "Request first 1024 bytes"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/videos/stream/:filename",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"videos",
+								"stream",
+								":filename"
+							],
+							"variable": [
+								{
+									"key": "filename",
+									"value": "",
+									"description": "Video filename (UUID)"
+								}
+							]
+						},
+						"description": "Stream video with range request (for testing seek functionality)"
+					},
+					"response": []
+				}
+			],
+			"description": "Video management endpoints"
+		},
+		{
+			"name": "Home",
+			"item": [
+				{
+					"name": "API Information",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								""
+							]
+						},
+						"description": "Get API information and available endpoints"
+					},
+					"response": []
+				}
+			],
+			"description": "Home endpoint"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "username",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+
