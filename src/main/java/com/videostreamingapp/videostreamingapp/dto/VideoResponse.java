@@ -7,11 +7,16 @@ public class VideoResponse {
     private String title;
     private String description;
     private String videoUrl;
+    private String thumbnailUrl;
     private String uploaderId;
     private String uploaderUsername;
     private Date uploadDate;
     private Long fileSize;
     private String contentType;
+    private Long viewCount;
+    private Long likeCount;
+    private Long commentCount;
+    private Boolean isLiked; // Whether the current user has liked this video
 
     public VideoResponse() {
     }
@@ -86,6 +91,46 @@ public class VideoResponse {
 
     public void setContentType(String contentType) {
         this.contentType = contentType;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
+    }
+
+    public Long getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(Long viewCount) {
+        this.viewCount = viewCount;
+    }
+
+    public Long getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(Long likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public Long getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(Long commentCount) {
+        this.commentCount = commentCount;
+    }
+
+    public Boolean getIsLiked() {
+        return isLiked;
+    }
+
+    public void setIsLiked(Boolean isLiked) {
+        this.isLiked = isLiked;
     }
 }
 

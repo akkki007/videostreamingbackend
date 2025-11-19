@@ -11,7 +11,7 @@
 
 The collection includes the following variables that are automatically managed:
 
-- `baseUrl` - Set to `http://localhost:8080` (change if your server runs on a different port)
+- `baseUrl` - Set to `http://127.0.0.1:8080` (change if your server runs on a different port)
 - `authToken` - Automatically saved after login/register
 - `userId` - Automatically saved after login/register
 - `username` - Automatically saved after login/register
@@ -33,8 +33,9 @@ The collection includes the following variables that are automatically managed:
 1. **List All Videos** - Get paginated list of videos
 2. **Search Videos** - Search videos by title/description
 3. **Get Video by ID** - Replace `:id` with actual video ID
-4. **Upload Video** - Select a video file and fill in title/description
+4. **Upload Video** - Select a video file and fill in title/description (optionally include thumbnail)
 5. **Stream Video** - Replace `:filename` with actual filename from video response
+6. **Get Thumbnail** - Replace `:filename` with thumbnail filename from video response
 
 ## Request Details
 
@@ -77,9 +78,10 @@ The collection includes the following variables that are automatically managed:
 - **URL:** `/api/videos/upload`
 - **Auth:** Bearer token (auto-included)
 - **Body:** form-data
-  - `file` - Select video file
-  - `title` - Video title
+  - `file` - Select video file (required)
+  - `title` - Video title (required)
   - `description` - Video description (optional)
+  - `thumbnail` - Select thumbnail image file (optional, must be an image file)
 
 #### Stream Video
 - **Method:** GET
@@ -87,13 +89,22 @@ The collection includes the following variables that are automatically managed:
 - Replace `:filename` with filename from video response
 - Optional: Add `Range` header for partial content
 
+#### Get Thumbnail
+- **Method:** GET
+- **URL:** `/api/videos/thumbnail/:filename`
+- Replace `:filename` with thumbnail filename from video response
+- Returns the thumbnail image file
+
 ## Testing Workflow
 
 1. **Register a new user** or **Login** with existing credentials
 2. **List videos** to see available videos
 3. **Upload a video** (requires authentication - token is auto-included)
+   - Optionally include a thumbnail image file
 4. **Get video details** by ID from the list
+   - Response includes `thumbnailUrl` if a thumbnail was uploaded
 5. **Stream video** using the filename from video details
+6. **Get thumbnail** using the thumbnail filename from video details (if available)
 
 ## Tips
 
@@ -112,11 +123,17 @@ The collection includes the following variables that are automatically managed:
 
 ### Upload Fails
 - Ensure you're authenticated (token is set)
-- Check file size (max 500MB)
+- Check file size (max 500MB for video)
 - Verify file is a valid video format
+- If uploading thumbnail, ensure it's an image file (jpg, png, etc.)
 
 ### Video Not Found
 - Make sure you're using the correct video ID or filename
 - Check that the video was successfully uploaded
 - Verify the baseUrl is correct
+
+### Thumbnail Not Found
+- Ensure a thumbnail was uploaded with the video
+- Check that you're using the correct thumbnail filename from the video response
+- Verify the `thumbnailUrl` field is present in the video response
 

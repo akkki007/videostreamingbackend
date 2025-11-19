@@ -64,6 +64,7 @@
       "title": "string",
       "description": "string",
       "videoUrl": "/api/videos/stream/{filename}",
+      "thumbnailUrl": "/api/videos/thumbnail/{filename}",
       "uploaderId": "string",
       "uploaderUsername": "string",
       "uploadDate": "timestamp",
@@ -100,9 +101,10 @@
 - **Authentication:** Required (Bearer token in Authorization header)
 - **Content-Type:** `multipart/form-data`
 - **Form Data:**
-  - `file` - Video file (max 500MB)
+  - `file` - Video file (max 500MB) (required)
   - `title` - Video title (required)
   - `description` - Video description (optional)
+  - `thumbnail` - Thumbnail image file (optional, must be an image file)
 - **Headers:**
   - `Authorization: Bearer {token}`
 - **Response:**
@@ -127,9 +129,14 @@
   - `Range: bytes=start-end` - For partial content/seek support
 - **Response:** Video file stream with proper content-type and range support
 
+### 7. Get Thumbnail
+- **Endpoint:** `GET /api/videos/thumbnail/{filename}`
+- **Authentication:** Not required
+- **Response:** Thumbnail image file with proper content-type (image/jpeg, image/png, etc.)
+
 ## Home Endpoint
 
-### 7. API Information
+### 8. API Information
 - **Endpoint:** `GET /`
 - **Authentication:** Not required
 - **Response:** API information and available endpoints

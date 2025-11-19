@@ -13,9 +13,11 @@ public class User {
     private String password;
     private String email;
     private Date createdAt;
+    private Long subscriberCount;
 
     public User() {
         this.createdAt = new Date();
+        this.subscriberCount = 0L;
     }
 
     public User(String username, String password, String email) {
@@ -23,6 +25,7 @@ public class User {
         this.password = password;
         this.email = email;
         this.createdAt = new Date();
+        this.subscriberCount = 0L;
     }
 
     // Getters and Setters
@@ -64,6 +67,14 @@ public class User {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Long getSubscriberCount() {
+        return subscriberCount;
+    }
+
+    public void setSubscriberCount(Long subscriberCount) {
+        this.subscriberCount = subscriberCount;
     }
 }
 

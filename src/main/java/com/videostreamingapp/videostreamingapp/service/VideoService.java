@@ -2,6 +2,7 @@ package com.videostreamingapp.videostreamingapp.service;
 
 import com.videostreamingapp.videostreamingapp.model.Video;
 import com.videostreamingapp.videostreamingapp.repository.VideoRepository;
+import com.videostreamingapp.videostreamingapp.util.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -13,9 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class VideoService {
@@ -26,29 +25,34 @@ public class VideoService {
     @Value("${video.upload.dir}")
     private String uploadDir;
 
-    public Video uploadVideo(MultipartFile file, String title, String description, String uploaderId, String uploaderUsername) throws IOException {
-        // Create upload directory if it doesn't exist
-        Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
+    @Value("${thumbnail.upload.dir}")
+    private String thumbnailDir;
+
+    public Video uploadVideo(MultipartFile file, MultipartFile thumbnail, String title, String description, String uploaderId, String uploaderUsername) throws IOException {
+        // Upload video file
+        String videoFilename = FileUploadUtil.uploadFile(file, uploadDir);
+        if (videoFilename == null) {
+            throw new IOException("Failed to upload video file");
         }
 
-        // Generate unique filename
-        String originalFilename = file.getOriginalFilename();
-        String extension = originalFilename != null && originalFilename.contains(".") 
-            ? originalFilename.substring(originalFilename.lastIndexOf(".")) 
-            : "";
-        String filename = UUID.randomUUID().toString() + extension;
-        Path filePath = uploadPath.resolve(filename);
-
-        // Save file
-        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+        // Upload thumbnail file if provided
+        String thumbnailFilename = null;
+        if (thumbnail != null && !thumbnail.isEmpty()) {
+            // Validate that thumbnail is an image
+            if (!FileUploadUtil.isImageFile(thumbnail)) {
+                throw new IllegalArgumentException("Thumbnail must be an image file");
+            }
+            thumbnailFilename = FileUploadUtil.uploadFile(thumbnail, thumbnailDir);
+        }
 
         // Create video entity
         Video video = new Video();
         video.setTitle(title);
         video.setDescription(description);
-        video.setVideoUrl("/api/videos/stream/" + filename);
+        video.setVideoUrl("/api/videos/stream/" + videoFilename);
+        if (thumbnailFilename != null) {
+            video.setThumbnailUrl("/api/videos/thumbnail/" + thumbnailFilename);
+        }
         video.setUploaderId(uploaderId);
         video.setUploaderUsername(uploaderUsername);
         video.setFileSize(file.getSize());
@@ -82,6 +86,15 @@ public class VideoService {
 
     public boolean videoFileExists(String filename) {
         Path filePath = Paths.get(uploadDir).resolve(filename);
+        return Files.exists(filePath);
+    }
+
+    public Path getThumbnailPath(String filename) {
+        return Paths.get(thumbnailDir).resolve(filename);
+    }
+
+    public boolean thumbnailFileExists(String filename) {
+        Path filePath = Paths.get(thumbnailDir).resolve(filename);
         return Files.exists(filePath);
     }
 }

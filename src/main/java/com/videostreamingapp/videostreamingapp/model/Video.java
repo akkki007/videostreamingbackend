@@ -12,14 +12,19 @@ public class Video {
     private String title;
     private String description;
     private String videoUrl; // Path to video file on filesystem
+    private String thumbnailUrl; // Path to thumbnail image on filesystem
     private String uploaderId;
     private String uploaderUsername;
     private Date uploadDate;
     private Long fileSize;
     private String contentType;
+    private Long viewCount;
+    private Long likeCount;
 
     public Video() {
         this.uploadDate = new Date();
+        this.viewCount = 0L;
+        this.likeCount = 0L;
     }
 
     public Video(String title, String description, String videoUrl, String uploaderId, String uploaderUsername) {
@@ -29,6 +34,8 @@ public class Video {
         this.uploaderId = uploaderId;
         this.uploaderUsername = uploaderUsername;
         this.uploadDate = new Date();
+        this.viewCount = 0L;
+        this.likeCount = 0L;
     }
 
     // Getters and Setters
@@ -102,6 +109,30 @@ public class Video {
 
     public void setContentType(String contentType) {
         this.contentType = contentType;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
+    }
+
+    public Long getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(Long viewCount) {
+        this.viewCount = viewCount;
+    }
+
+    public Long getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(Long likeCount) {
+        this.likeCount = likeCount;
     }
 }
 

@@ -20,8 +20,9 @@ public class HomeController {
             "login", "POST /api/auth/login",
             "listVideos", "GET /api/videos?page=0&size=10&search=query",
             "getVideo", "GET /api/videos/{id}",
-            "uploadVideo", "POST /api/videos/upload (requires authentication)",
-            "streamVideo", "GET /api/videos/stream/{filename}"
+            "uploadVideo", "POST /api/videos/upload (requires authentication, accepts optional thumbnail)",
+            "streamVideo", "GET /api/videos/stream/{filename}",
+            "getThumbnail", "GET /api/videos/thumbnail/{filename}"
         ));
         return response;
     }

@@ -37,8 +37,14 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/videos/**").permitAll() // Allow video streaming without auth
-                        .requestMatchers("/api/videos/upload").authenticated() // Only upload requires auth
+                        .requestMatchers("/api/videos/stream/**").permitAll() // Allow video streaming without auth
+                        .requestMatchers("/api/videos/thumbnail/**").permitAll() // Allow thumbnail access without auth
+                        .requestMatchers("GET", "/api/videos/**").permitAll() // Allow GET requests to videos without auth
+                        .requestMatchers("POST", "/api/videos/**").authenticated() // POST to videos requires auth
+                        .requestMatchers("/api/likes/**").authenticated() // Likes require auth
+                        .requestMatchers("GET", "/api/comments/video/**").permitAll() // Allow reading comments without auth
+                        .requestMatchers("/api/comments/**").authenticated() // Other comment operations require auth
+                        .requestMatchers("/api/subscriptions/**").authenticated() // Subscriptions require auth
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
